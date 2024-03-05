@@ -91,6 +91,9 @@ Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
+" Lint
+Plug 'dense-analysis/ale'
+
 call plug#end()
 
 map <F2> :NERDTreeToggle<CR>
@@ -113,19 +116,6 @@ let g:NERDTreeWinPos = "right"
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" Color Scheme
-colorscheme gruvbox
-set background=dark
-if has("macunix") || has("unix")
-    nnoremap <silent> [oh :call gruvbox#hls_show()<CR>
-    nnoremap <silent> ]oh :call gruvbox#hls_hide()<CR>
-    nnoremap <silent> coh :call gruvbox#hls_toggle()<CR>
-
-    nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
-    nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
-    nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
-endif
 
 " vim-airline
 let g:airline_theme = 'gruvbox'
@@ -189,7 +179,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
 " LSP fold
-set foldmethod=expr
+set foldmethod=diff
   \ foldexpr=lsp#ui#vim#folding#foldexpr()
   \ foldtext=lsp#ui#vim#folding#foldtext()
 
@@ -204,4 +194,36 @@ endif
 
 " vim-inspector
 let g:vimspector_enable_mappings = 'HUMAN'
-let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-cpptools', 'CodeLLDB', 'vscode-bash-debug', 'delve', 'vscode-js-debug', 'debugger-for-chrome' ]
+let g:vimspector_install_gadgets = [
+            \ 'debugpy',
+            \ 'vscode-cpptools',
+            \ 'CodeLLDB',
+            \ 'vscode-bash-debug',
+            \ 'delve',
+            \ 'vscode-js-debug',
+            \ 'debugger-for-chrome'
+            \]
+
+" ale
+let g:airline#extensions#ale#enabled = 1
+let g:ale_linters = {
+      \ 'go': ['gofmt', 'golines'],
+      \ }"
+let g:ale_fixers = {
+    \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \   'go': ['gofmt'],
+    \}
+let g:ale_fix_on_save = 1
+
+" Color Scheme
+colorscheme gruvbox
+set background=dark
+if has("macunix") || has("unix")
+    nnoremap <silent> [oh :call gruvbox#hls_show()<CR>
+    nnoremap <silent> ]oh :call gruvbox#hls_hide()<CR>
+    nnoremap <silent> coh :call gruvbox#hls_toggle()<CR>
+
+    nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+    nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+    nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
+endif
